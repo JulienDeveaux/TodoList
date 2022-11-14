@@ -41,8 +41,9 @@ let todoListItems: Todo[] = fakeData;
 
 function MainScreen({navigation, route}: any) {
     let params = route.params
-    if(params) {
+    if(params && params.todo) {
         todoListItems = Array.from(params.todo)
+        params.todo = undefined
     }
     return (
         <View style={styles.container}>
