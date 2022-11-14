@@ -38,10 +38,10 @@ function MainScreen({navigation}: any) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Todos</Text>
-            <Pressable style={{...styles.button, ...styles.blueColor}} onPress={() => navigation.navigate('AddTodo')}>
+            <Pressable style={{...styles.button, ...styles.blueColor}} onPress={() => navigation.navigate('Add Todo')}>
                 <Text>Add Todo</Text>
             </Pressable>
-            <Pressable style={{...styles.button, ...styles.redColor}} onPress={() => navigation.navigate('removeTodo')}>
+            <Pressable style={{...styles.button, ...styles.redColor}} onPress={() => navigation.navigate('Remove Todo')}>
                 <Text>Remove Todo</Text>
             </Pressable>
             
@@ -86,9 +86,9 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator>
-                <Stack.Screen name="mainPanel" component={MainScreen}></Stack.Screen>
-                <Stack.Screen name="AddTodo" component={AddTodo}></Stack.Screen>
-                <Stack.Screen name="removeTodo" component={RemoveTodo}></Stack.Screen>
+                <Stack.Screen name="Todo Main Menu" component={MainScreen}></Stack.Screen>
+                <Stack.Screen name="Add Todo" component={AddTodo}></Stack.Screen>
+                <Stack.Screen name="Remove Todo" component={RemoveTodo}></Stack.Screen>
             </Stack.Navigator>
         </NavigationContainer>
     );
