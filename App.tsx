@@ -1,7 +1,10 @@
 import {StatusBar} from 'expo-status-bar';
-import {Button, FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Button, FlatList, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {useState} from "react";
+
+// npm run android
 
 const Stack = createNativeStackNavigator();
 
@@ -34,7 +37,13 @@ const fakeData: Todo[] = [
     }
 ];
 
-function MainScreen({navigation}: any) {
+let todoListItems: Todo[] = fakeData;
+
+function MainScreen({navigation, route}: any) {
+    let params = route.params
+    if(params) {
+        todoListItems = Array.from(params.todo)
+    }
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Todos</Text>
@@ -46,16 +55,17 @@ function MainScreen({navigation}: any) {
             </Pressable>
             
             <Text style={styles.title}>Pending List</Text>
-            <FlatList data={fakeData.filter((item) => !item.status)}
+            <FlatList data={todoListItems.filter((item) => !item.status)}
                       renderItem={({item}) =>
                           <Text style={styles.flatListText}>{item.title}</Text>}
             />
 
             <Text style={styles.title}>Done List</Text>
             <FlatList contentContainerStyle={styles.greenColor}
-                      data={fakeData.filter((item) => item.status)}
+                      data={todoListItems.filter((item) => item.status)}
                       renderItem={({item}) =>
-                          <Text style={styles.flatListText}>{item.title}</Text>}/>
+                          <Text style={styles.flatListText}>{item.title}</Text>}
+            />
 
             <StatusBar style="auto"/>
         </View>
@@ -63,9 +73,31 @@ function MainScreen({navigation}: any) {
 }
 
 function AddTodo({navigation}: any) {
+    const [data, setTodo] = useState<Todo[]>(todoListItems);
+    const [title, setTitle] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
+    const addTodo = () => {
+        const _todos = [...data];
+
+        _todos.push({
+            title: title,
+            description: description,
+            status: false
+        });
+        setTodo(_todos);
+
+        navigation.navigate('Todo Main Menu', {todo: _todos});
+    }
     return (
         <View style={styles.container}>
             <Text>Add Todo</Text>
+            <TextInput style={styles.input}
+                       onChangeText={(text) => setTitle(text)}
+                       placeholder="Title"/>
+            <TextInput style={styles.input}
+                       onChangeText={(text) => setDescription(text)}
+                       placeholder="Description"/>
+            <Button title="Add Todo" onPress={addTodo}/>
             <Button title="Back" onPress={() => navigation.goBack()}/>
             <StatusBar style="auto"/>
         </View>
@@ -114,6 +146,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         borderWidth: 1,
         width: 200
+    },
+    input: {
+        width: 200,
+        borderWidth: 1,
+        padding: 0,
+        textAlign: 'center'
     },
     blueColor: {
         backgroundColor:"#0aebfe"
