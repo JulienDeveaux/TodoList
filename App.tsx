@@ -67,7 +67,8 @@ function MainScreen({navigation, route}: any) {
             </Pressable>
             
             <Text style={styles.title}>Pending List</Text>
-            <FlatList data={todoListItems.filter((item) => !item.status)}
+            <FlatList contentContainerStyle={styles.blueColor}
+                      data={todoListItems.filter((item) => !item.status)}
                       renderItem={({item}) =>
                           <Text delayLongPress={2000} onLongPress={() => changeStatus(item)} onPress={() => navigation.navigate('Details', {item: item})} style={styles.flatListText}>{item.title}</Text>}
             />
@@ -76,7 +77,7 @@ function MainScreen({navigation, route}: any) {
             <FlatList contentContainerStyle={styles.greenColor}
                       data={todoListItems.filter((item) => item.status)}
                       renderItem={({item}) =>
-                          <Text  delayLongPress={2000} onLongPress={() => changeStatus(item)} onPress={() => navigation.navigate('Details', {item: item})} style={styles.flatListText}>{item.title}</Text>}
+                          <Text delayLongPress={2000} onLongPress={() => changeStatus(item)} onPress={() => navigation.navigate('Details', {item: item})} style={styles.flatListText}>{item.title}</Text>}
             />
 
             <StatusBar style="auto"/>
@@ -117,9 +118,25 @@ function AddTodo({navigation}: any) {
 }
 
 function RemoveTodo({navigation}: any) {
+    const [data, setTodo] = useState<Todo[]>(todoListItems);
+    function removeItem(item: Todo) {
+        const _todos = [...data];
+        const index = _todos.indexOf(item);
+        if(index > -1) {
+            _todos.splice(index, 1);
+        }
+        setTodo(_todos);
+        navigation.navigate('Todo Main Menu', {todo: _todos});
+    }
+
     return (
         <View style={styles.container}>
             <Text>Remove Todo</Text>
+            <FlatList data={todoListItems}
+                      renderItem={({item}) =>
+                          <Text onPress={() => removeItem(item)} style={item.status ? {...styles.flatListText, ...styles.greenColor}
+                                                                                    : {...styles.flatListText, ...styles.blueColor}}>{item.title}</Text>}
+            />
             <Button title="Back" onPress={() => navigation.goBack()}/>
             <StatusBar style="auto"/>
         </View>
