@@ -34,6 +34,11 @@ const fakeData: Todo[] = [
         title: 'Todo 4 done',
         description: 'Description 4',
         status: true
+    },
+    {
+        title: 'Todo 5 done',
+        description: 'Description 5',
+        status: true
     }
 ];
 
