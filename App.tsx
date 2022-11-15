@@ -41,10 +41,21 @@ let todoListItems: Todo[] = fakeData;
 
 function MainScreen({navigation, route}: any) {
     let params = route.params
+    const [data, setTodo] = useState<Todo[]>(todoListItems);
     if(params && params.todo) {
         todoListItems = Array.from(params.todo)
         params.todo = undefined
     }
+
+    function changeStatus(item: Todo) {
+        const _todos = [...todoListItems];
+        const index = _todos.indexOf(item);
+        if(index > -1) {
+            _todos[index].status = !_todos[index].status;
+        }
+        setTodo(_todos);
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Todos</Text>
@@ -58,14 +69,14 @@ function MainScreen({navigation, route}: any) {
             <Text style={styles.title}>Pending List</Text>
             <FlatList data={todoListItems.filter((item) => !item.status)}
                       renderItem={({item}) =>
-                          <Text style={styles.flatListText}>{item.title}</Text>}
+                          <Text delayLongPress={2000} onLongPress={() => changeStatus(item)} onPress={() => navigation.navigate('Details', {item: item})} style={styles.flatListText}>{item.title}</Text>}
             />
 
             <Text style={styles.title}>Done List</Text>
             <FlatList contentContainerStyle={styles.greenColor}
                       data={todoListItems.filter((item) => item.status)}
                       renderItem={({item}) =>
-                          <Text style={styles.flatListText}>{item.title}</Text>}
+                          <Text  delayLongPress={2000} onLongPress={() => changeStatus(item)} onPress={() => navigation.navigate('Details', {item: item})} style={styles.flatListText}>{item.title}</Text>}
             />
 
             <StatusBar style="auto"/>
@@ -115,6 +126,31 @@ function RemoveTodo({navigation}: any) {
     );
 }
 
+function Details({navigation, route}: any) {
+    let params = route.params
+    let item: Todo = {
+        title: '',
+        description: '',
+        status: false
+    }
+    if(params && params.item) {
+        item = params.item
+        params.item = undefined
+    }
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Name : </Text>
+            <Text>{item.title}</Text>
+            <Text style={styles.title}>Description : </Text>
+            <Text>{item.description}</Text>
+            <Text style={styles.title}>Status : </Text>
+            <Text>{item.status ? 'Done' : 'Not Done'}</Text>
+            <Button title="Back" onPress={() => navigation.goBack()}/>
+            <StatusBar style="auto"/>
+        </View>
+    );
+}
+
 export default function App() {
     return (
         <NavigationContainer>
@@ -122,6 +158,7 @@ export default function App() {
                 <Stack.Screen name="Todo Main Menu" component={MainScreen}></Stack.Screen>
                 <Stack.Screen name="Add Todo" component={AddTodo}></Stack.Screen>
                 <Stack.Screen name="Remove Todo" component={RemoveTodo}></Stack.Screen>
+                <Stack.Screen name="Details" component={Details}></Stack.Screen>
             </Stack.Navigator>
         </NavigationContainer>
     );
